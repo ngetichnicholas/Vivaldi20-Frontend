@@ -68,7 +68,7 @@ export default {
         authState.user = null;
 
         // Redirect to the home page after logout
-        this.$router.push("/");
+        this.$router.push("/login");
       } catch (error) {
         console.error("Logout error:", error);
       }

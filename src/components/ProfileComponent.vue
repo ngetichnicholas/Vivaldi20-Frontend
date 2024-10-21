@@ -1,8 +1,8 @@
 <template>
   <div class="container mt-5">
-    <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+    <div class="card shadow-lg p-4 mb-5 bg-white rounded">
       <div class="card-body text-center">
-        <h2 class="card-title">Your Profile</h2>
+        <h2 class="card-title mb-4">Your Profile</h2>
         <div v-if="profile" class="profile-info">
           <img
             :src="profile.profile_photo"
@@ -11,39 +11,45 @@
             width="150"
             height="150"
           />
-          <h4 class="card-subtitle mb-2 text-muted">{{ profile.first_name }} {{ profile.last_name }}</h4>
+          <h4 class="card-subtitle mb-2 text-primary">{{ profile.first_name }} {{ profile.last_name }}</h4>
           <p class="card-text">
             <strong>Username:</strong> {{ profile.username }}<br />
             <strong>Profession:</strong> {{ profile.profession }}<br />
             <strong>Bio:</strong> {{ profile.bio }}<br />
           </p>
-          <input type="file" @change="onFileChange" />
+          <input type="file" @change="onFileChange" class="mt-2" />
           <button class="btn btn-primary mt-2" @click="updateProfilePhoto">Update Profile Photo</button>
-          <form @submit.prevent="editProfile" class="mt-4">
-            <div class="form-group">
-              <label for="username">Username:</label>
-              <input type="text" v-model="formData.username" class="form-control" id="username" required />
+          
+          <h5 class="mt-4">Edit Your Information</h5>
+          <form @submit.prevent="editProfile" class="mt-3">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="username">Username:</label>
+                <input type="text" v-model="formData.username" class="form-control" id="username" required />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="first_name">First Name:</label>
+                <input type="text" v-model="formData.first_name" class="form-control" id="first_name" required />
+              </div>
             </div>
-            <div class="form-group">
-              <label for="first_name">First Name:</label>
-              <input type="text" v-model="formData.first_name" class="form-control" id="first_name" required />
-            </div>
-            <div class="form-group">
-              <label for="last_name">Last Name:</label>
-              <input type="text" v-model="formData.last_name" class="form-control" id="last_name" required />
-            </div>
-            <div class="form-group">
-              <label for="profession">Profession:</label>
-              <input type="text" v-model="formData.profession" class="form-control" id="profession" />
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="last_name">Last Name:</label>
+                <input type="text" v-model="formData.last_name" class="form-control" id="last_name" required />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="profession">Profession:</label>
+                <input type="text" v-model="formData.profession" class="form-control" id="profession" />
+              </div>
             </div>
             <div class="form-group">
               <label for="bio">Bio:</label>
-              <textarea v-model="formData.bio" class="form-control" id="bio"></textarea>
+              <textarea v-model="formData.bio" class="form-control" id="bio" rows="3"></textarea>
             </div>
-            <button type="submit" class="btn btn-success">Edit Profile</button>
+            <button type="submit" class="btn btn-success">Save Changes</button>
           </form>
         </div>
-        <div v-else class="alert alert-info">
+        <div v-else class="alert alert-info mt-4">
           Loading your profile information...
         </div>
       </div>
@@ -69,7 +75,6 @@ export default {
     };
   },
   mounted() {
-    // Automatically fetch profile data after login
     this.fetchProfile();
   },
   methods: {
@@ -85,7 +90,7 @@ export default {
             }
           }
         );
-        this.profile = response.data.data; // Updated to access the correct structure
+        this.profile = response.data.data;
         this.formData.username = this.profile.username;
         this.formData.first_name = this.profile.first_name;
         this.formData.last_name = this.profile.last_name;
@@ -115,7 +120,7 @@ export default {
             }
           }
         );
-        this.fetchProfile(); // Refresh profile to show updated photo
+        this.fetchProfile();
         alert("Profile photo updated successfully!");
       } catch (error) {
         console.error("Error updating profile photo:", error);
@@ -137,7 +142,7 @@ export default {
             }
           }
         );
-        this.fetchProfile(); // Refresh profile to show updated details
+        this.fetchProfile();
         alert("Profile updated successfully!");
       } catch (error) {
         console.error("Error updating profile:", error);
@@ -150,7 +155,7 @@ export default {
 
 <style scoped>
 .card {
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
 }
 
@@ -158,19 +163,29 @@ export default {
   width: 150px;
   height: 150px;
   object-fit: cover;
+  border: 3px solid #007bff;
 }
 
 .card-subtitle {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: bold;
+  color: #007bff;
 }
 
 .card-text {
-  font-size: 1.1rem;
-  margin-top: 20px;
+  font-size: 1.2rem;
+  margin-top: 15px;
 }
 
 .alert {
   font-size: 1.2rem;
+}
+
+.form-row {
+  margin-bottom: 15px;
+}
+
+.btn-primary {
+  width: 100%;
 }
 </style>

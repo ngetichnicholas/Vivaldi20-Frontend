@@ -42,6 +42,8 @@ export default {
 
         // Store token and user details in localStorage
         localStorage.setItem("token", token);
+        localStorage.setItem("userId", user.id);
+
         localStorage.setItem("user", JSON.stringify(user)); // Store user data as JSON string
 
         // Update the shared auth state
