@@ -1,6 +1,3 @@
-Here’s an updated version of your README, including a setup guide with links to your repository:
-
-```markdown
 # Vivaldi20-Frontend
 
 ## Project Setup Guide
@@ -62,6 +59,3 @@ For more details on customizing your configuration, refer to the [Configuration 
 ## Full Documentation
 
 For a complete guide, visit the [Vivaldi20-Frontend Documentation](https://github.com/ngetichnicholas/Vivaldi20-Frontend.git).
-```
-
-This version includes a setup guide that helps users get started with your project easily. Let me know if you need any more changes or additions!
