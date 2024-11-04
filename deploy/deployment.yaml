@@ -9,25 +9,48 @@
         update_cache: yes
         upgrade: dist
 
-    - name: Install necessary packages (Git and Nginx)
+    - name: Install necessary packages (Git, Nginx, Node.js, and npm)
       apt:
         name:
           - git
           - nginx
+          - nodejs
+          - npm
         state: present
+
+    - name: Mark /var/www/vivaldi-frontend as a safe Git directory
+      command: git config --global --add safe.directory /var/www/vivaldi-frontend
 
     - name: Clone the Vivaldi frontend repository
       git:
         repo: "https://github.com/ngetichnicholas/Vivaldi20-Frontend.git"
-        dest: "/var/www/vivaldi-frontend"
+        dest: "/home/ubuntu/vivaldi-frontend"
         version: "main"
         force: yes
+
+    - name: Install npm dependencies
+      command: npm install
+      args:
+        chdir: /home/ubuntu/vivaldi-frontend
+
+    - name: Build the Vue.js project
+      command: npm run build
+      args:
+        chdir: /home/ubuntu/vivaldi-frontend
+
+    - name: Copy built files to Nginx directory
+      copy:
+        src: /home/ubuntu/vivaldi-frontend/dist/
+        dest: /usr/share/nginx/html/dist/
+        owner: www-data
+        group: www-data
+        mode: '0755'
+        remote_src: yes
 
     - name: Remove default Nginx configuration
       file:
         path: /etc/nginx/sites-enabled/default
         state: absent
-        force: yes
 
     - name: Create Nginx configuration for Vivaldi frontend
       copy:
@@ -37,7 +60,7 @@
               listen 80;
               server_name _;
 
-              root /var/www/vivaldi-frontend;
+              root /usr/share/nginx/html/dist;
               index index.html;
 
               location / {
@@ -54,7 +77,7 @@
 
     - name: Adjust permissions for the frontend directory
       file:
-        path: /var/www/vivaldi-frontend
+        path: /usr/share/nginx/html/dist
         owner: www-data
         group: www-data
         recurse: yes
