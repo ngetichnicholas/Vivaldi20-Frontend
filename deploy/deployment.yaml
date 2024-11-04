@@ -1,0 +1,66 @@
+---
+- name: Deploy Vivaldi Frontend Application
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install necessary packages (Git and Nginx)
+      apt:
+        name:
+          - git
+          - nginx
+        state: present
+
+    - name: Clone the Vivaldi frontend repository
+      git:
+        repo: "https://github.com/ngetichnicholas/Vivaldi20-Frontend.git"
+        dest: "/var/www/vivaldi-frontend"
+        version: "main"
+        force: yes
+
+    - name: Remove default Nginx configuration
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+        force: yes
+
+    - name: Create Nginx configuration for Vivaldi frontend
+      copy:
+        dest: /etc/nginx/sites-available/vivaldi-frontend
+        content: |
+          server {
+              listen 80;
+              server_name _;
+
+              root /var/www/vivaldi-frontend;
+              index index.html;
+
+              location / {
+                  try_files $uri $uri/ =404;
+              }
+          }
+
+    - name: Enable Vivaldi frontend site
+      file:
+        src: /etc/nginx/sites-available/vivaldi-frontend
+        dest: /etc/nginx/sites-enabled/vivaldi-frontend
+        state: link
+        force: yes
+
+    - name: Adjust permissions for the frontend directory
+      file:
+        path: /var/www/vivaldi-frontend
+        owner: www-data
+        group: www-data
+        recurse: yes
+
+    - name: Restart Nginx to apply changes
+      systemd:
+        name: nginx
+        state: restarted
+        enabled: true
