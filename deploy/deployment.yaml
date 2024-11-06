@@ -20,6 +20,8 @@
 
     - name: Mark /var/www/vivaldi-frontend as a safe Git directory
       command: git config --global --add safe.directory /var/www/vivaldi-frontend
+      environment:
+        HOME: /home/ubuntu
 
     - name: Clone the Vivaldi frontend repository
       git:
