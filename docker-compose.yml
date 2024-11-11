@@ -1,0 +1,7 @@
+version: '3'
+services:
+  vivaldi-frontend:
+    build: .
+    ports:
+      - "80:80"
+    restart: always

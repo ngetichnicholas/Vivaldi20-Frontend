@@ -1,0 +1,62 @@
+---
+- name: Deploy Vivaldi Frontend Application in Docker
+  hosts: localhost
+  become: true
+
+  vars:
+    project_path: "/home/nick/vivaldi-frontend"
+    image_name: "vivaldi-frontend"
+
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install necessary packages (Git, Docker, Docker Compose)
+      apt:
+        name:
+          - git
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Clone the Vivaldi frontend repository
+      git:
+        repo: "https://github.com/ngetichnicholas/Vivaldi20-Frontend.git"
+        dest: "{{ project_path }}"
+        version: "main"
+        force: yes
+
+      # CLEANUP SECTION
+    - name: Stop all stopped containers
+      shell: |
+        docker container prune -f
+      ignore_errors: true
+
+    - name: Remove unused images
+      shell: |
+        docker image prune -f
+      ignore_errors: true
+
+    - name: Remove unused volumes
+      shell: |
+        docker volume prune -f
+      ignore_errors: true
+
+    - name: Remove dangling images (untagged or old)
+      shell: |
+        docker image prune -a -f --filter "until=24h"
+      ignore_errors: true
+
+    # DEPLOYMENT SECTION
+    - name: Run docker instance using Docker Compose
+      command:
+        cmd: "docker-compose up --build -d"
+        chdir: "{{ project_path }}"

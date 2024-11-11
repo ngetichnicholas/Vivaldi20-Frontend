@@ -1,6 +1,6 @@
 ---
 - name: Deploy Vivaldi Frontend Application
-  hosts: localhost
+  hosts: frontend
   become: true
 
   tasks:
