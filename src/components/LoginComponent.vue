@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5">
-    <h2>Login Page</h2>
+    <h2>Login</h2>
     <form @submit.prevent="login">
       <div class="form-group">
         <label for="username">Username</label>
